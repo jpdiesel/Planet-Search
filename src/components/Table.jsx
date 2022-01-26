@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import context from '../context/context';
 
 function Table() {
+  const { data, filterByName } = useContext(context);
   return (
     <div>
       <table>
@@ -23,9 +24,13 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          <context.Consumer>
-            {
-              ({ data }) => (data.length > 0 ? data.map((planet, index) => (
+          {
+            // Esse filtro foi feito graças ao link a seguir:
+            // https://www.freecodecamp.org/news/build-a-search-filter-using-react-and-react-hooks/
+            (data.length > 0 ? data
+              .filter((planet) => planet.name.toLowerCase()
+                .includes(filterByName.name.toLowerCase()))
+              .map((planet, index) => (
                 <tr key={ index }>
                   <td>{ planet.name }</td>
                   <td>{ planet.rotation_period }</td>
@@ -42,9 +47,13 @@ function Table() {
                   <td>{ planet.url }</td>
                 </tr>
               ))
-                : null)
-            }
-          </context.Consumer>
+              : (
+                <tr>
+                  <td>
+                    Carregando...
+                  </td>
+                </tr>))
+          }
         </tbody>
       </table>
     </div>
